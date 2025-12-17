@@ -1,5 +1,5 @@
 export const APP_INFO = {
-    NAME: "BookNext",
+    APP_NAME: "rakesh",
     VERSION: "1.0.0",
     year: new Date().getFullYear(),
 }   

@@ -14,25 +14,39 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useState } from 'react';
-import { useLogin } from '@/hooks/auth/useLogin';
+import { useSignup } from '@/hooks/auth/useSignup';
 import { toast } from 'sonner';
 import { APP_INFO } from '@/constants/appInfo';
+import { da } from 'zod/v4/locales';
 
-export default function LoginPage() {
-  const { mutate, isPending, error, data } = useLogin();
+export default function SignupPage() {
+  const { data, mutate, isPending } = useSignup();
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  console.log(data);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({ email, password });
-    
-  }
-  const example = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.error('Logged in successfully!');
-  }
-  
 
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    mutate(
+      { username, email, password },
+      {
+        onSuccess: () => {
+          toast.success('Account created successfully! You can now log in.');
+          
+        },
+        onError: (error) => {
+          toast.error(`Signup failed: ${error.message}`);
+        },
+      }
+    );
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -44,16 +58,27 @@ export default function LoginPage() {
           </div>
 
           <CardTitle className="text-center">
-            Welcome back to {APP_INFO.APP_NAME}
+            Create your {APP_INFO.APP_NAME} account
           </CardTitle>
 
           <CardDescription className="text-center">
-            Login to buy, sell, or exchange books
+            Sign up to buy, sell, or exchange books
           </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <form className="space-y-4" onSubmit={example}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                placeholder="John Doe"
+                value={username}
+                disabled={isPending}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -62,7 +87,7 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 value={email}
                 disabled={isPending}
-                onChange={(e) => { setEmail(e.target.value) }}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -71,15 +96,27 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
+                placeholder="••••••••"
                 value={password}
                 disabled={isPending}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
                 placeholder="••••••••"
-                onChange={(e) => { setPassword(e.target.value) }}
+                value={confirmPassword}
+                disabled={isPending}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
 
             <Button className="w-full" disabled={isPending} type="submit">
-              {isPending ? 'Logging in...' : 'Login'}
+              {isPending ? 'Creating account...' : 'Sign up'}
             </Button>
           </form>
         </CardContent>
@@ -88,12 +125,12 @@ export default function LoginPage() {
           <Separator />
 
           <p className="text-sm text-muted-foreground text-center">
-            Don&apos;t have an account?{' '}
+            Already have an account?{' '}
             <a
-              href="/signup"
+              href="/login"
               className="text-primary hover:underline font-medium"
             >
-              Sign up
+              Login
             </a>
           </p>
         </CardFooter>

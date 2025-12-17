@@ -5,7 +5,6 @@ import { APP_INFO } from "@/constants/appInfo"
 import { useRouter } from "next/navigation";
 
 
-
 export function LandingNavbar() {
     const router = useRouter();
     const handleSignIn = () => {
@@ -21,7 +20,7 @@ export function LandingNavbar() {
                             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                                 <BookOpen className="h-5 w-5 text-primary-foreground" />
                             </div>
-                            <span className="text-xl font-bold">{APP_INFO.NAME}</span>
+                            <span className="text-xl font-bold">{APP_INFO.APP_NAME}</span>
                         </div>
 
                         <div className="hidden md:flex items-center gap-6">

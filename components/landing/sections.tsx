@@ -113,7 +113,7 @@ export function LandingSections() {
           <div className="border rounded-3xl p-12 bg-card shadow-sm">
             <div className="text-center mb-12">
               <h3 className="text-3xl font-bold mb-4">
-                Why Readers Love {APP_INFO.NAME}
+                Why Readers Love {APP_INFO.APP_NAME}
               </h3>
             </div>
 
@@ -161,7 +161,7 @@ export function LandingSections() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <Separator className="my-8" />
           <p className="text-center text-sm text-muted-foreground">
-            © {APP_INFO.year} {APP_INFO.NAME}. All rights reserved.
+            © {APP_INFO.year} {APP_INFO.APP_NAME}. All rights reserved.
           </p>
         </div>
       </footer>
