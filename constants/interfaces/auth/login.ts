@@ -5,6 +5,6 @@ export interface ILoginPayload {
 export interface ILoginResponse {
     id: string; 
     email: string;
-    username: string;
-    token?: string;
+    name: string;
+    token: string;
 }
