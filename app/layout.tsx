@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,12 +31,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
 
-        <QueryProvider>
-          <ThemeProvider>
-            {children}
-            <Toaster position="bottom-right" richColors />
-          </ThemeProvider>
-        </QueryProvider>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          <QueryProvider>
+            <ThemeProvider>
+              {children}
+              <Toaster position="bottom-right" richColors />
+            </ThemeProvider>
+          </QueryProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
