@@ -3,6 +3,7 @@ export interface ILoginPayload {
     password: string;
     provider: 'auth' | 'google';
     token?: string;
+    
 }
 export interface ILoginResponse {
     id: string; 

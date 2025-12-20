@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { DbQuery } from "@/lib/db/db-helper";
 import { IAPIEndpoints } from "@/constants/interfaces/api.interface";
-import { IUser } from "@/constants/interfaces";
+import { IUser } from "@/constants/interfaces/user";
 export async function GET() {
     try {
         const users: IUser[] = await DbQuery("SELECT id, username, email FROM nextjs.users");

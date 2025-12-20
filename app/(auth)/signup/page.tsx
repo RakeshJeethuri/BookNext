@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { BookOpen } from 'lucide-react';
+import { BookOpen } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -8,45 +8,81 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { useState } from 'react';
-import { useSignup } from '@/hooks/auth/useSignup';
-import { toast } from 'sonner';
-import { APP_INFO } from '@/constants/appInfo';
-import { da } from 'zod/v4/locales';
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
+import { useSignup } from "@/hooks/auth/useSignup";
+import { toast } from "sonner";
+import { APP_INFO } from "@/constants/appInfo";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function SignupPage() {
-  const { data, mutate, isPending } = useSignup();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  console.log(data);
+  const { mutate, isPending } = useSignup();
 
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  //----------------------------------------------------
+  // NORMAL SIGNUP FLOW
+  //----------------------------------------------------
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error("Passwords do not match");
       return;
     }
+
     mutate(
-      { username, email, password },
+      {
+        provider: "auth",
+        email,
+        name: username,
+        password,
+      },
       {
         onSuccess: () => {
-          toast.success('Account created successfully! You can now log in.');
-          
+          toast.success("Signup success!");
         },
-        onError: (error) => {
-          toast.error(`Signup failed: ${error.message}`);
-        },
+        onError: (error: Error) => {
+          toast.error(error.message);
+        }
       }
     );
   };
+
+
+  //----------------------------------------------------
+  // GOOGLE SIGNUP FLOW
+  //----------------------------------------------------
+  const handleGoogleSuccess = (credentialResponse: { credential?: string }) => {
+    if (!credentialResponse.credential) {
+      toast.error("Google signup failed");
+      return;
+    }
+
+    mutate(
+      {
+        provider: "google",
+        email: "",     // backend does email extraction
+        token: credentialResponse.credential,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Google signup success!");
+        },
+        onError: (error: Error) => {
+          toast.error(error.message);
+        }
+      }
+    );
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -54,7 +90,9 @@ export default function SignupPage() {
         <CardHeader className="space-y-1 flex flex-col items-center">
           <div className="flex items-center gap-2 mb-2">
             <BookOpen className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">{APP_INFO.APP_NAME}</span>
+            <span className="text-2xl font-bold">
+              {APP_INFO.APP_NAME}
+            </span>
           </div>
 
           <CardTitle className="text-center">
@@ -67,7 +105,20 @@ export default function SignupPage() {
         </CardHeader>
 
         <CardContent>
+
+          {/* Google Signup Button */}
+          <div className="flex justify-center mb-4">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error("Google sign-in failed")}
+            />
+          </div>
+
+          <Separator className="my-4" />
+
+          {/* Email Signup Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
+
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <Input
@@ -116,7 +167,7 @@ export default function SignupPage() {
             </div>
 
             <Button className="w-full" disabled={isPending} type="submit">
-              {isPending ? 'Creating account...' : 'Sign up'}
+              {isPending ? "Creating account..." : "Sign up"}
             </Button>
           </form>
         </CardContent>
@@ -125,11 +176,8 @@ export default function SignupPage() {
           <Separator />
 
           <p className="text-sm text-muted-foreground text-center">
-            Already have an account?{' '}
-            <a
-              href="/login"
-              className="text-primary hover:underline font-medium"
-            >
+            Already have an account?{" "}
+            <a href="/login" className="text-primary hover:underline font-medium">
               Login
             </a>
           </p>
