@@ -20,10 +20,9 @@ import { toast } from 'sonner';
 import { APP_INFO } from '@/constants/appInfo';
 
 import { GoogleLogin } from '@react-oauth/google';
-
+import { useCurrentUser, useUser } from '@/components/providers/user-provider';
 export default function LoginPage() {
-
-  const { data,mutate, isPending } = useLogin();
+  const { data, mutate, isPending } = useLogin();
   console.log("Login response data:", data);
 
   const [email, setEmail] = useState('');
