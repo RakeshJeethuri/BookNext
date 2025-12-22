@@ -1,7 +1,8 @@
-
 import { NextResponse } from "next/server";
 import { IAPIEndpoints } from "@/constants/interfaces/api.interface";
-import { transporter } from "@/lib/mail";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
     try {
@@ -16,12 +17,24 @@ export async function POST(request: Request) {
             };
             return NextResponse.json(response, { status: 400 });
         }
-        await transporter.sendMail({
-            from: `"BookNext" <${process.env.BREVO_SMTP_USER}>`,
+
+        const { error } = await resend.emails.send({
+            from: `"BookNext" <Booknext@booknext.online>`,
             to,
             subject,
             html,
         });
+
+        if (error) {
+            const response: IAPIEndpoints<null> = {
+                success: false,
+                statuscode: 400,
+                data: null,
+                message: "Error sending email",
+                error: error.message,
+            };
+            return NextResponse.json(response, { status: 400 });
+        }
 
         const response: IAPIEndpoints<null> = {
             success: true,
