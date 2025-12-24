@@ -20,36 +20,44 @@ import { toast } from 'sonner';
 import { APP_INFO } from '@/constants/appInfo';
 
 import { GoogleLogin } from '@react-oauth/google';
-import { useCurrentUser, useUser } from '@/components/providers/user-provider';
+import { useRouter } from 'next/navigation';
 export default function LoginPage() {
-  const { data, mutate, isPending } = useLogin();
-  console.log("Login response data:", data);
+  const router = useRouter();
+  const { mutateAsync, isPending } = useLogin();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!email || !password) {
-      toast.error("Email & Password required");
-      return;
+    try {
+      const result = await mutateAsync({
+        provider: 'auth',
+        email,
+        password,
+      });
+      if (result) {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
     }
-
-    mutate({
-      provider: "auth",
-      email,
-      password,
-    });
   };
 
-  const handleGoogleLogin = (googleIDToken: string) => {
-    mutate({
-      provider: "google",
-      token: googleIDToken,
-      email: "",
-      password: "",
-    });
+  const handleGoogleLogin = async (googleIDToken: string) => {
+    try {
+      const result = await mutateAsync({
+        provider: "google",
+        token: googleIDToken,
+        email: "",
+        password: "",
+      });
+      if (result) {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("Google login failed:", error);
+    }
   };
 
   return (
@@ -77,7 +85,7 @@ export default function LoginPage() {
 
         {/* form */}
         <CardContent>
-          <form className="space-y-4" onSubmit={handleAuthSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
 
             <div className="space-y-2">
               <Label>Email</Label>

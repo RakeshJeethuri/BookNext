@@ -25,7 +25,7 @@ export async function POST(request: Request) {
             const payload = ticket.getPayload();
 
             const email = payload?.email;
-            const name  = payload?.name;
+            const name = payload?.name;
             if (!email) {
                 return NextResponse.json(
                     {
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
                 data: loginResp,
             };
 
-            
+
             const res = NextResponse.json(response, { status: 200 });
 
             res.cookies.set({
@@ -179,6 +179,7 @@ export async function POST(request: Request) {
             name: "auth_token",
             value: token,
             httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
             path: "/",
             sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60,
