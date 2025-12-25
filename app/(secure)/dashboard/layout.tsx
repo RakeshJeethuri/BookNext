@@ -15,9 +15,9 @@ export default async function SecureLayout({
     }
 
     return (
-        <div className="min-h-screen bg-muted/40 ">
+        <div>
             <LandingNavbardashbaord />
-            <main className="pt-4">
+            <main>
                 {children}
             </main>
         </div>

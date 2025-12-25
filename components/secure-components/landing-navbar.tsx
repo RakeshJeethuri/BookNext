@@ -79,13 +79,13 @@ export function LandingNavbardashbaord() {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-44">
-                <DropdownMenuItem onClick={() => router.push("/profile")}>
+                <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/my-books")}>
+                <DropdownMenuItem onClick={() => router.push("/dashboard/my-books")}>
                   My Books
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/messages")}>
+                <DropdownMenuItem onClick={() => router.push("/dashboard/messages")}>
                   Messages
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-red-600">
