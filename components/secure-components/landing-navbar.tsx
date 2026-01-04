@@ -18,9 +18,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { APP_INFO } from "@/constants/appInfo"
+import { useCurrentUser } from "@/hooks/useCurrentUser"
 
 export function LandingNavbardashbaord() {
-  const router = useRouter()
+  const router = useRouter();
+  const { user, loading} = useCurrentUser();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/70 backdrop-blur-md">
@@ -69,10 +75,10 @@ export function LandingNavbardashbaord() {
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 rounded-full px-2 py-1 hover:bg-muted transition">
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback>R</AvatarFallback>
+                    <AvatarFallback>{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</AvatarFallback>
                   </Avatar>
                   <span className="hidden md:block text-sm font-medium">
-                    Rakesh
+                    {user?.name || "User"}
                   </span>
                   <ChevronDown className="h-4 w-4 text-muted-foreground" />
                 </button>
